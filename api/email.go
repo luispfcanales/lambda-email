@@ -18,6 +18,9 @@ type Person struct {
 // Email send to email
 func Email(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Methods", "POST,GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	p := &Person{}
 	json.NewDecoder(r.Body).Decode(p)
 
