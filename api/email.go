@@ -27,7 +27,7 @@ func Email(w http.ResponseWriter, r *http.Request) {
 
 	m.SetHeader("Subject", "Gophers GO!")
 
-	t := template.Must(template.ParseFiles("WellcomeTemplate.html"))
+	t := template.Must(template.ParseFiles("./WellcomeTemplate.html"))
 	m.AddAlternativeWriter("text/html", func(w io.Writer) error {
 		return t.Execute(w, "Registrate")
 	})
