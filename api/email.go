@@ -18,11 +18,17 @@ type Person struct {
 // Email send to email
 func Email(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	w.Header().Set("Access-Control-Allow-Methods", "POST,GET, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	//w.Header().Set("Access-Control-Allow-Credentials", "true")
+	//w.Header().Set("Access-Control-Allow-Methods", "POST,GET, OPTIONS")
+	//w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	p := &Person{}
 	json.NewDecoder(r.Body).Decode(p)
