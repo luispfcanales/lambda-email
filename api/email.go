@@ -2,11 +2,9 @@ package handler
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	gomail "gopkg.in/mail.v2"
 )
@@ -26,10 +24,12 @@ func Email(w http.ResponseWriter, r *http.Request) {
 
 	m.SetHeader("Subject", "Gophers GO!")
 
-	t := template.Must(template.ParseFiles("./WellcomeTemplate.html"))
-	m.AddAlternativeWriter("text/html", func(w io.Writer) error {
-		return t.Execute(w, "Registrate")
-	})
+	//t := template.Must(template.ParseFiles("./WellcomeTemplate.html"))
+	//m.AddAlternativeWriter("text/html", func(w io.Writer) error {
+	//	return t.Execute(w, "Registrate")
+	//})
+
+	m.SetBody("text/html", "Hello <b>Bob</b> and <i>Cora</i>!")
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, email, pass)
 
