@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,8 +10,16 @@ import (
 	gomail "gopkg.in/mail.v2"
 )
 
+type Person struct {
+	Code  string `json:"code,omitempty"`
+	Email string `json:"email,omitempty"`
+}
+
 // Email send to email
 func Email(w http.ResponseWriter, r *http.Request) {
+	p := &Person{}
+	json.NewDecoder(r.Body).Decode(p)
+
 	email := os.Getenv("GMAIL")
 	pass := os.Getenv("PASS_GMAIL")
 	if email == "" || pass == "" {
@@ -20,7 +29,7 @@ func Email(w http.ResponseWriter, r *http.Request) {
 	m := gomail.NewMessage()
 
 	m.SetHeader("From", "luispfcanales@gmail.com")
-	m.SetHeader("To", "lpfunoc@unamad.edu.pe")
+	m.SetHeader("To", p.Email)
 
 	m.SetHeader("Subject", "Gophers GO!")
 
@@ -29,7 +38,7 @@ func Email(w http.ResponseWriter, r *http.Request) {
 	//	return t.Execute(w, "Registrate")
 	//})
 
-	m.SetBody("text/html", "Hello <b>Bob</b> and <i>Cora</i>!")
+	m.SetBody("text/html", fmt.Sprintf("code verification: <b>%s</b>!", p.Code))
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, email, pass)
 
@@ -41,5 +50,5 @@ func Email(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	w.Write([]byte("send email"))
+	w.Write([]byte(fmt.Sprintf("send email to: %s", p.Email)))
 }
