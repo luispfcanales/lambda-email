@@ -17,6 +17,7 @@ type Person struct {
 
 // Email send to email
 func Email(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	p := &Person{}
 	json.NewDecoder(r.Body).Decode(p)
 
@@ -41,8 +42,6 @@ func Email(w http.ResponseWriter, r *http.Request) {
 	m.SetBody("text/html", fmt.Sprintf("code verification: <b>%s</b>!", p.Code))
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, email, pass)
-
-	//d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	// Now send E-Mail
 	if err := d.DialAndSend(m); err != nil {
