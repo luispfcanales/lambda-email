@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"crypto/tls"
 	"fmt"
 	"io"
 	"log"
@@ -34,7 +33,7 @@ func Email(w http.ResponseWriter, r *http.Request) {
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, email, pass)
 
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	//d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	// Now send E-Mail
 	if err := d.DialAndSend(m); err != nil {
