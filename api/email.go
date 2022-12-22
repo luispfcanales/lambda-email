@@ -52,7 +52,7 @@ func Email(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("not found template: %v", err)))
 		return
 	}
-	t.Execute(&body, "Registrate")
+	t.Execute(&body, nil)
 	//t := template.Must(template.ParseFiles("./WellcomeTemplate.html"))
 	//m.AddAlternativeWriter("text/html", func(w io.Writer) error {
 	//	return t.Execute(w, "Registrate")
