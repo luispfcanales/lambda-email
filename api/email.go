@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -20,8 +18,6 @@ type Person struct {
 
 // Email send to email
 func Email(w http.ResponseWriter, r *http.Request) {
-	var body bytes.Buffer
-
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST,GET, OPTIONS")
@@ -47,19 +43,7 @@ func Email(w http.ResponseWriter, r *http.Request) {
 	m.SetHeader("To", p.Email)
 	m.SetHeader("Subject", "Gophers GO!")
 
-	t, err := template.ParseFiles("./WellcomeTemplate.html")
-	if err != nil {
-		w.Write([]byte(fmt.Sprintf("not found template: %v", err)))
-		return
-	}
-	t.Execute(&body, nil)
-	//t := template.Must(template.ParseFiles("./WellcomeTemplate.html"))
-	//m.AddAlternativeWriter("text/html", func(w io.Writer) error {
-	//	return t.Execute(w, "Registrate")
-	//})
-
-	//m.SetBody("text/html", fmt.Sprintf("code verification: <b>%s</b>!", p.Code))
-	m.SetBody("text/html", body.String())
+	m.SetBody("text/html", fmt.Sprintf("tu pedido esta en camino tu codigo es: <b>%s</b>!", p.Code))
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, email, pass)
 
