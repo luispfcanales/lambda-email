@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +12,7 @@ import (
 	gomail "gopkg.in/mail.v2"
 )
 
+// Person is request model to send email
 type Person struct {
 	Code  string `json:"code,omitempty"`
 	Email string `json:"email,omitempty"`
@@ -17,12 +20,11 @@ type Person struct {
 
 // Email send to email
 func Email(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Access-Control-Allow-Origin", "*")
+	var body bytes.Buffer
 
+	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	//w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Access-Control-Allow-Methods", "POST,GET, OPTIONS")
-	//w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
 
 	if r.Method != http.MethodPost {
@@ -43,15 +45,21 @@ func Email(w http.ResponseWriter, r *http.Request) {
 
 	m.SetHeader("From", "luispfcanales@gmail.com")
 	m.SetHeader("To", p.Email)
-
 	m.SetHeader("Subject", "Gophers GO!")
 
+	t, err := template.ParseFiles("./WellcomeTemplate.html")
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("not found template: %v", err)))
+		return
+	}
+	t.Execute(&body, "Registrate")
 	//t := template.Must(template.ParseFiles("./WellcomeTemplate.html"))
 	//m.AddAlternativeWriter("text/html", func(w io.Writer) error {
 	//	return t.Execute(w, "Registrate")
 	//})
 
-	m.SetBody("text/html", fmt.Sprintf("code verification: <b>%s</b>!", p.Code))
+	//m.SetBody("text/html", fmt.Sprintf("code verification: <b>%s</b>!", p.Code))
+	m.SetBody("text/html", body.String())
 
 	d := gomail.NewDialer("smtp.gmail.com", 587, email, pass)
 
